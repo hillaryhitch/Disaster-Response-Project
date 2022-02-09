@@ -24,31 +24,39 @@ def clean_data(df):
     OUTPUT
     df: cleaned dataframe
     '''
-    categories = df['categories'].str.split(';',expand=True)
+    # Create a dataframe of the 36 individual category columns
+    categories = df.categories.str.split(pat=';', expand=True)
+
+    # Select the first row of the categories dataframe
     row = categories.iloc[0]
-    row2=row.apply(lambda x: x[:-2])
-    # use this row to extract a list of new column names for categories.
-    # one way is to apply a lambda function that takes everything 
-    # up to the second to last character of each string with slicing
-    category_colnames = list(row2)
+
+    # Use this row to extract a list of new column names for categories
+    category_colnames = row.apply(lambda x: x[:-2])
+
+    # Rename the categories columns
     categories.columns = category_colnames
+
+    # Convert category values to just numbers 0 or 1
     for column in categories:
         # set each value to be the last character of the string
-        categories[column] = categories[column].apply(lambda x: x[-1:])
-
+        categories[column] = categories[column].str[-1]
         # convert column from string to numeric
-        categories[column] = categories[column].apply(lambda x: str(x))
-        df=df.drop('categories',1)
-        df = pd.concat([df,categories],axis=1)
-        df=df.drop_duplicates()
-        return df
+        categories[column] = categories[column].astype(np.int)
+
+    # Drop the original categories column
+    df.drop('categories', axis=1, inplace=True)
+
+    # Concatenate the original dataframe with the new categories dataframe
+    df = pd.concat([df, categories], axis=1)
+    df.drop_duplicates(subset='id', inplace=True)
+    return df
 
 
 def save_data(df, database_filename):
     '''writes dataframe to db
     INPUT: a dataframe and a db filename'''
     engine = create_engine('sqlite:///'+database_filename)
-    df.to_sql('table1', engine, index=False) 
+    df.to_sql('table1', engine, index=False,if_exists='replace') 
 
 
 def main():
