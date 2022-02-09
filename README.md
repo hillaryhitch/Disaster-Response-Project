@@ -1,4 +1,8 @@
 # Disaster-Response-Project
+
+During and immediately after natural disaster there are millions of communication to disaster response organizations either direct or through social media. Disaster response organizations have to to filter and pull out the most important messages from this huge amount of communications a and redirect specific requests or indications to the proper organization that takes care of medical aid, water, logistics ecc. Every second is vital in this kind of situations, so handling the message correctly is the key
+
+
 This is an NLP project pipeline that builds, trains, evaluates and serves a model to predict category of messages received for disaster response.
 
 There are 3 steps used:
